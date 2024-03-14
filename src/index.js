@@ -88,7 +88,39 @@ L.SwoopyArrow = L.Layer.extend({
     const swoopyLabel = this._createLabel();
     this._currentMarker = L.marker([this._fromLatlng.lat, this._fromLatlng.lng], { icon: swoopyLabel, keyboard: this._keyboard }).addTo(this._map);
   },
+  onAdd: function (map) {
+    this._map = map;
+    this.getPane().appendChild(this._svg);
 
+    this._drawSwoopyArrows();
+
+    this.update(this._map);
+
+    // Add event listeners for mouseover and mouseout
+    this._svg.addEventListener("mouseover", this._handleMouseOver);
+    this._svg.addEventListener("mouseout", this._handleMouseOut);
+  },
+
+  // Handle mouseover event
+  _handleMouseOver: function (event) {
+    // Show tooltip or perform other actions
+    // You can access tooltipContent or other properties here
+  },
+
+  // Handle mouseout event
+  _handleMouseOut: function (event) {
+    // Hide tooltip or perform other actions
+  },
+
+  onRemove: function (map) {
+    this._map = map;
+    this._currentPath.parentNode.removeChild(this._currentPath);
+    this._map.removeLayer(this._currentMarker);
+
+    // Remove event listeners when layer is removed from map
+    this._svg.removeEventListener("mouseover", this._handleMouseOver);
+    this._svg.removeEventListener("mouseout", this._handleMouseOut);
+  }
   _createArrow: function () {
     this._container = this._container || L.SVG.create('defs');
     const marker = L.SVG.create('marker');
